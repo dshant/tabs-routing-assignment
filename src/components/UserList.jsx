@@ -1,28 +1,9 @@
 import { FilePenLine, Trash } from "lucide-react";
 import React, { useContext } from "react";
 import { AppContext } from "./AppProvider";
-import { MODULES } from "@/utils/constants";
-import { v4 } from "uuid";
 
 export const UserList = () => {
-  const { users, setTabs, tabs } = useContext(AppContext);
-
-  const handleEditUser = (userInfo) => {
-    const unactiveTabs = tabs.map((t) => ({
-      ...t,
-      active: false,
-    }));
-    setTabs([
-      ...unactiveTabs,
-      {
-        tabId: v4(),
-        title: userInfo.name,
-        module: MODULES.USER,
-        data: userInfo,
-        active: true,
-      },
-    ]);
-  };
+  const { users, handleEditUser } = useContext(AppContext);
 
   return (
     <div className="container mx-auto">

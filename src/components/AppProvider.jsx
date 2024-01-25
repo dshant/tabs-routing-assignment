@@ -1,5 +1,13 @@
 import { API } from "@/utils/API";
-import React, { createContext, useEffect, useMemo, useState } from "react";
+import { MODULES } from "@/utils/constants";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { v4 } from "uuid";
 
 export const AppContext = createContext({
   users: [],
@@ -48,14 +56,74 @@ export const AppProvider = ({ children }) => {
     fetchUsers();
   }, []);
 
+  const handleEditUser = useCallback(
+    (userInfo) => {
+      // Deactivate all tabs
+      const deactivatedTabs = tabs.map((tab) => ({
+        ...tab,
+        active: false,
+      }));
+
+      // Check if we already have a user list tab
+      const hasUserListTab = deactivatedTabs.some(
+        (tab) => tab.module === MODULES.USER_LIST
+      );
+
+      // Add the user list tab if it doesn't exist
+      const userListTab = !hasUserListTab
+        ? [
+            {
+              tabId: v4(),
+              title: "User",
+              module: MODULES.USER_LIST,
+              active: false,
+            },
+          ]
+        : [];
+
+      // Check if there's already an open tab for the edited user
+      const hasSameUserTab = deactivatedTabs.find(
+        (tab) => tab.module === MODULES.USER && tab.data?.id === userInfo.id
+      );
+
+      // If there's an open tab for the edited user, make it active
+      if (hasSameUserTab) {
+        const updatedTabs = deactivatedTabs.map((tab) =>
+          tab.module === MODULES.USER && tab.data?.id === userInfo.id
+            ? { ...tab, active: true }
+            : tab
+        );
+        setTabs([...userListTab, ...updatedTabs]);
+        return;
+      }
+
+      // Add a new tab for the edited user
+      setTabs([
+        ...userListTab,
+        ...deactivatedTabs,
+        {
+          tabId: v4(),
+          title: userInfo.name,
+          module: MODULES.USER,
+          data: userInfo,
+          active: true,
+        },
+      ]);
+    },
+    [tabs]
+  );
+
+  console.log(":: Tabs", tabs);
+
   const contextValue = useMemo(
     () => ({
       users,
       posts: postsWithUserDetails,
       tabs,
       setTabs,
+      handleEditUser,
     }),
-    [users, postsWithUserDetails, tabs]
+    [users, postsWithUserDetails, tabs, handleEditUser]
   );
 
   return (
