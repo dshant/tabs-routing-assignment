@@ -5,32 +5,52 @@ import { MODULES } from "@/utils/constants";
 import { v4 } from "uuid";
 
 export const PostList = () => {
-  const { posts, setTabs, tabs } = useContext(AppContext);
-
-  const handleEditUser = (userInfo) => {
-    const unactiveTabs = tabs.map((t) => ({
-      ...t,
-      active: false,
-    }));
-    setTabs([
-      ...unactiveTabs,
-      {
-        tabId: v4(),
-        title: userInfo.name,
-        module: MODULES.USER,
-        data: userInfo,
-        active: true,
-      },
-    ]);
-  };
+  const { posts, setTabs, tabs, handleEditUser } = useContext(AppContext);
 
   const handleEditPost = (postInfo) => {
-    const unactiveTabs = tabs.map((t) => ({
-      ...t,
+    // Deactivate all tabs
+    const deactivatedTabs = tabs.map((tab) => ({
+      ...tab,
       active: false,
     }));
+
+    // Check if we already have a post list tab
+    const hasUserListTab = deactivatedTabs.some(
+      (tab) => tab.module === MODULES.POST_LIST
+    );
+
+    // Add the post list tab if it doesn't exist
+    const postListTab = !hasUserListTab
+      ? [
+          {
+            tabId: v4(),
+            title: "Post",
+            module: MODULES.POST_LIST,
+            active: false,
+          },
+        ]
+      : [];
+
+    // Check if there's already an open tab for the edited post
+    const hasSamePostTab = deactivatedTabs.find(
+      (tab) => tab.module === MODULES.POST && tab.data?.id === postInfo.id
+    );
+
+    // If there's an open tab for the edited post, make it active
+    if (hasSamePostTab) {
+      const updatedTabs = deactivatedTabs.map((tab) =>
+        tab.module === MODULES.POST && tab.data?.id === postInfo.id
+          ? { ...tab, active: true }
+          : tab
+      );
+      setTabs([...postListTab, ...updatedTabs]);
+      return;
+    }
+
+    // Add a new tab for the edited post
     setTabs([
-      ...unactiveTabs,
+      ...postListTab,
+      ...deactivatedTabs,
       {
         tabId: v4(),
         title: postInfo.title,
