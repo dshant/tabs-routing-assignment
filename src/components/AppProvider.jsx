@@ -1,5 +1,5 @@
-import { API } from "@/utils/API";
-import { MODULES } from "@/utils/constants";
+import { API } from "../utils/API";
+import { MODULES } from "../utils/constants";
 import React, {
   createContext,
   useCallback,

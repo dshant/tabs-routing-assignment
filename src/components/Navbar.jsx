@@ -1,10 +1,9 @@
-import Link from "next/link";
 import React, { useContext } from "react";
 import { AppContext } from "./AppProvider";
-import { useRouter } from "next/router";
-import { MODULES } from "@/utils/constants";
+import { MODULES } from "../utils/constants";
 import { v4 } from "uuid";
 import classNames from "classnames";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const NAV_LINKS = [
   {
@@ -20,18 +19,19 @@ const NAV_LINKS = [
 ];
 
 export const Navbar = () => {
-  const router = useRouter();
+  const router = useLocation();
+  const navigate = useNavigate();
   const { tabs, setTabs } = useContext(AppContext);
 
   const handleNavigation = (link) => {
     if (link.href === "/") {
       setTabs([]);
-      router.push("/");
+      navigate("/");
       return;
     }
 
     if (!tabs.length) {
-      return router.push(link.href);
+      return navigate(link.href);
     }
 
     const alreadyInTabs = tabs.find((t) => t.module === link.module);

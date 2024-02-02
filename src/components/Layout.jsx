@@ -1,15 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Navbar } from "./Navbar";
-import { AppContext, AppProvider } from "./AppProvider";
+import { AppProvider } from "./AppProvider";
 import { TabPanel } from "./TabPanel";
+import { Outlet } from "react-router-dom";
 
-export const Layout = ({ children }) => {
+export const Layout = () => {
   return (
     <AppProvider>
       <div>
         <Navbar />
         <div className="relative">
-          {children}
+          <Outlet />
           <TabPanel />
         </div>
       </div>

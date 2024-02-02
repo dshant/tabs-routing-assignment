@@ -1,7 +1,7 @@
 import { FilePenLine, Trash } from "lucide-react";
 import React, { useContext } from "react";
 import { AppContext } from "./AppProvider";
-import { MODULES } from "@/utils/constants";
+import { MODULES } from "../utils/constants";
 import { v4 } from "uuid";
 
 export const PostList = () => {

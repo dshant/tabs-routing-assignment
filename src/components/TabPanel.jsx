@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import UserForm from "./UserForm";
 import { AppContext } from "./AppProvider";
 import classNames from "classnames";
-import { MODULES } from "@/utils/constants";
+import { MODULES } from "../utils/constants";
 import { UserList } from "./UserList";
 import { X } from "lucide-react";
 import PostForm from "./PostForm";
